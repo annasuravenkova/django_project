@@ -13,3 +13,4 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('published', 'author', 'created_at')
     search_fields = ('title', 'author', 'content')
     prepopulated_fields = {'slug': ('title',)}
+    #exclude = ('slug',)
