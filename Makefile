@@ -12,3 +12,9 @@ migrate:
 
 createsuperuser:
 	uv run manage.py createsuperuser
+
+deletepost:
+	uv run manage.py delete_post
+
+updatepost:
+	uv run manage.py update_post
