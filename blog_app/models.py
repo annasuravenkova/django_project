@@ -18,11 +18,11 @@ class Post(models.Model):
     slug = models.SlugField(unique=True)
     content = models.TextField(verbose_name="Текст статьи")
     published = models.BooleanField(default=False, verbose_name="Статус публикации")
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Автор", null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
     views_count = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="posts", verbose_name="Категория")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="posts", verbose_name="Категория", null=True)
 
     class Meta:
         verbose_name = 'Статья'

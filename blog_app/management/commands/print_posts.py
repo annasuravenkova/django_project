@@ -14,3 +14,6 @@ class Command(BaseCommand):
             self.stdout.write(f'{post.id}: {post.title} - {post.created_at:%Y-%m-%d}')
 
         self.stdout.write(self.style.SUCCESS(f'Найдено постов: {posts.count()}'))
+
+        self.stdout.write("Опубликованные посты")
+        self.print_published_posts()
