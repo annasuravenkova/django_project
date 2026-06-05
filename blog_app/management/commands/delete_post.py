@@ -5,8 +5,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         post_id = int(input('Введите id поста: '))
         try:
-            post = Post.objects.get(id=post_id)
-            post.delete()
+            Post.objects.get(id=post_id).delete()
             self.stdout.write("Пост удален")
         except Post.DoesNotExist:
             self.stdout.write("Пост не найден")

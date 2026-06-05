@@ -1,3 +1,5 @@
+export PYTHONUTF8=1
+
 run:
 	uv run manage.py runserver
 
@@ -18,3 +20,9 @@ deletepost:
 
 updatepost:
 	uv run manage.py update_post
+
+printpublishedposts:
+	uv run manage.py print_published_posts
+
+createpost:
+	uv run manage.py create_post
