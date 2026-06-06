@@ -1,10 +1,13 @@
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
 from blog_app.models import Post
 
 def index(request):
-    return HttpResponse("<h1>Hello World!</h1>")
+    posts = Post.objects.filter(published=True)[:5]
+
+    context = {'posts': posts}
+    return render(request, 'blog/index.html', context)
 
 def posts_list(request):
     posts = Post.objects.filter(published=True)
@@ -17,11 +20,5 @@ def posts_list(request):
 
 def posts_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    content = f'''
-    <h1>{post.title}</h1>
-    <p>Автор: {post.author}</p>
-    <div>{post.content}</div>
-    <hr>
-    <a href="/posts/">Назад к статьям</a>
-    '''
-    return HttpResponse(content)
+    context = {'post': post}
+    return render(request, 'blog/post_detail.html', context)
