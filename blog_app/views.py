@@ -29,9 +29,7 @@ def categories_list(request):
     categories = Category.objects.all()
     content = '<ul>'
     for category in categories:
-        content += f'''
-        <li>{category.title}</li><ul><br><br>
-        '''
+        content += f"<li>{category.title}</li><ul>"
     content += '</ul>'
     return HttpResponse(content)
 
@@ -40,5 +38,5 @@ def categories_detail(request, category_id):
     content = f"<h1>{category.title}</h1>"
     posts = Post.objects.filter(category=category, published=True)
     for post in posts:
-       content += f'''<a href="/posts/{post.slug}/">{post.title}</a><br><br>'''
+       content += "<a href="/posts/{post.slug}/">{post.title}</a><br>"
     return HttpResponse(content)
