@@ -1,10 +1,15 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from blog_app.models import Category
+from django.shortcuts import render
+
 from blog_app.models import Post
 
 def index(request):
-    return HttpResponse("<h1>Hello World!</h1>")
+    posts = Post.objects.filter(published=True)[:5]
+
+    context = {'posts': posts}
+    return render(request, 'blog/index.html', context)
 
 def posts_list(request):
     posts = Post.objects.filter(published=True)
@@ -15,16 +20,10 @@ def posts_list(request):
 
     return HttpResponse(content)
 
-def posts_detail(request, post_slug):
-    post = get_object_or_404(Post, slug=post_slug)
-    content = f'''
-    <h1>{post.title}</h1>
-    <p>Автор: {post.author}</p>
-    <div>{post.content}</div>
-    <hr>
-    <a href="/posts/">Назад к статьям</a>
-    '''
-    return HttpResponse(content)
+def posts_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    context = {'post': post}
+    return render(request, 'blog/post_detail.html', context)
 
 def categories_list(request):
     categories = Category.objects.all()
