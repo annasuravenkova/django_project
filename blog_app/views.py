@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from blog_app.models import Post
 from .models import Category
@@ -15,13 +14,16 @@ def posts_list(request):
     content = '<h1>Опубликованные статьи</h1><br><br>'
     for post in posts:
         content += f'<a href="/posts/{post.id}">{post.title}</a> ({post.created_at})<br>'
+    context = {'posts': posts}
 
-    return HttpResponse(content)
+    return render(request, 'blog/posts_list.html', context)
 
-def posts_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+def posts_detail(request, post_slug):
+    post = get_object_or_404(Post, id=post_slug)
+    Post.increase_views_count(post)
     context = {'post': post}
     return render(request, 'blog/post_detail.html', context)
+
 
 
 def categories_list(request):
