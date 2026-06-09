@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Категории публикаций — {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="mb-4 fw-bold text-dark">Каталог категорий</h1>
+        <p class="text-muted mb-4">Выберите интересующую вас тему, чтобы отфильтровать статьи по категориям.</p>
+
+        <div class="list-group shadow-sm">
+            {% for category in categories %}
+                <a href="{% url 'blog:category_detail' category.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 fs-5">
+                    <div>
+                        📁 <strong>{{ category.title }}</strong>
+                    </div>
+                    <!-- related_name="posts" позволяет узнать количество привязанных постов -->
+                    <span class="badge bg-primary rounded-pill">
+                        {{ category.posts.count }}
+                    </span>
+                </a>
+            {% empty %}
+                <div class="alert alert-info mb-0">Категории ещё не созданы.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+- [ ] Создать файл шаблона `templates/blog/category_detail.html`.
+- [ ] Добавить в `category_detail.html` следующий HTML-код:
+
+```html
+{% extends "base.html" %}
+
+{% block title %}Категория: {{ category.title }} — {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="mb-4">
+            <a href="{% url 'blog:categories_list' %}" class="text-decoration-none text-muted small">&larr; Назад к каталогу</a>
+            <h1 class="display-5 fw-bold text-dark mt-2">Категория: {{ category.title }}</h1>
+            <p class="text-muted">Всего статей в категории: {{ posts.count }}</p>
+        </div>
+
+        <hr class="my-4">
+
+        {% for post in posts %}
+            <article class="card mb-4 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title h3 fw-bold">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none text-dark hover-primary">
+                            {{ post.title }}
+                        </a>
+                    </h3>
+                    <div class="text-muted small mb-3">
+                        Опубликовано: {{ post.created_at|date:"d M Y" }} | Автор: {{ post.author }}
+                    </div>
+                    <p class="card-text text-secondary">
+                        {{ post.content|truncatewords:20 }}
+                    </p>
+                    <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-dark btn-sm">
+                        Читать дальше &rarr;
+                    </a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="alert alert-info border-0 shadow-sm">
+                В этой категории пока нет опубликованных статей.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
