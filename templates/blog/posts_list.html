@@ -9,7 +9,7 @@
 
         <div class="list-group shadow-sm">
             {% for post in posts %}
-                <a href="{% url 'blog:posts_list' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 fs-5">
+                <a href="{% url 'blog:posts_detail' post.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 fs-5">
                     <div>
                         📁 <strong>{{ post.title }}</strong>
                     </div>
