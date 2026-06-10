@@ -20,7 +20,7 @@ def posts_list(request):
 
 def posts_detail(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
-    Post.increase_views_count(post)
+    post.increase_views_count()
     context = {'post': post}
     return render(request, 'blog/post_detail.html', context)
 
