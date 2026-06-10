@@ -1,6 +1,8 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
+from blog_app.models import Category
+from django.shortcuts import render
+
 from blog_app.models import Post
-from .models import Category
 
 def index(request):
     posts = Post.objects.filter(published=True)[:5]
