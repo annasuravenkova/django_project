@@ -19,7 +19,7 @@ def posts_list(request):
     return render(request, 'blog/posts_list.html', context)
 
 def posts_detail(request, post_slug):
-    post = get_object_or_404(Post, id=post_slug)
+    post = get_object_or_404(Post, slug=post_slug)
     Post.increase_views_count(post)
     context = {'post': post}
     return render(request, 'blog/post_detail.html', context)
