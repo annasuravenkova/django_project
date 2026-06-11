@@ -1,13 +1,21 @@
-from django.shortcuts import get_object_or_404
-from blog_app.models import Category
+from django.shortcuts import get_object_or_404, redirect
+from blog_app.models import Category, Post
 from django.shortcuts import render
+from blog_app.forms import PostForm, SearchForm
+from pytils.translit import slugify
 
-from blog_app.models import Post
 
 def index(request):
-    posts = Post.objects.filter(published=True)[:5]
-
-    context = {'posts': posts}
+    search_form = SearchForm(request.GET)
+    posts = Post.objects.filter(published=True)
+    if search_form.is_valid():
+        query = search_form.cleaned_data.get('query')
+        posts = posts.filter(title__icontains=query)
+        posts = posts[:5]
+    context = {
+        'posts': posts,
+        'search_form': search_form
+    }
     return render(request, 'blog/index.html', context)
 
 def posts_list(request):
@@ -44,3 +52,16 @@ def category_detail(request, category_id):
         'posts': posts
     }
     return render(request, 'blog/category_detail.html', context)
+
+
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(data=request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.slug = slugify(post.title)
+            post.save()
+            return redirect('blog:index_page')
+    else:
+        form = PostForm()
+    return render(request, 'blog/post_create.html', context={'form':form})
