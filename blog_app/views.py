@@ -78,12 +78,12 @@ def category_create(request):
         form = CategoryForm()
     return render(request, 'blog/category_create.html', context = {'form':form})
 
-# def post_edit(request, post_slug):
-#     post = get_object_or_404(Post, slug=post_slug)
-#     form = PostForm(request.POST or None, instance=post)
-#     if request.method == "POST" and form.is_valid():
-#         form.save()
-#         return redirect('blog:post_detail', post_slug=post.slug)
-#     else:
-#         form = PostForm(instance=post)
-#     return render(request, 'blog/post_edit.html', context={'form':form})
+def post_edit(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+    form = PostForm(request.POST or None, instance=post)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect('blog:posts_detail', post_slug=post.slug)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/post_edit.html', context={'form':form, 'post':post})
