@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from blog_app.models import Category, Post
 from django.shortcuts import render
-from blog_app.forms import PostForm, SearchForm
+from blog_app.forms import PostForm, SearchForm, CategoryForm
 from pytils.translit import slugify
 
 
@@ -65,3 +65,25 @@ def post_create(request):
     else:
         form = PostForm()
     return render(request, 'blog/post_create.html', context={'form':form})
+
+def category_create(request):
+    if request.method == 'POST':
+        form = CategoryForm(data=request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.slug = slugify(category.title)
+            category.save()
+            return redirect('blog:index_page')
+    else:
+        form = CategoryForm()
+    return render(request, 'blog/category_create.html', context = {'form':form})
+
+# def post_edit(request, post_slug):
+#     post = get_object_or_404(Post, slug=post_slug)
+#     form = PostForm(request.POST or None, instance=post)
+#     if request.method == "POST" and form.is_valid():
+#         form.save()
+#         return redirect('blog:post_detail', post_slug=post.slug)
+#     else:
+#         form = PostForm(instance=post)
+#     return render(request, 'blog/post_edit.html', context={'form':form})
