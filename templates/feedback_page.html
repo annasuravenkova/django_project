@@ -59,6 +59,20 @@
                         <div class="form-text text-muted small">Укажите действующий email для ответа.</div>
                     </div>
 
+                    <!-- НОВОЕ ПОЛЕ: Тема обращения -->
+                    <div class="mb-3">
+                        {{ form.subject.label_tag }}
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.subject.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text text-muted small">Кратко опишите тему вашего вопроса.</div>
+                    </div>
+
                     <!-- Поле "Сообщение" -->
                     <div class="mb-4">
                         {{ form.message.label_tag }}

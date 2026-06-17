@@ -33,3 +33,16 @@ class FeedbackForm(forms.Form):
             }
         )
     )
+
+    SUBJECT_CHOICES = [
+        ('tech', 'Технический вопрос'),
+        ('collaboration', 'Сотрудничество'),
+        ('complaint', 'Жалоба'),
+        ('other', 'Другое'),
+    ]
+
+    subject = forms.ChoiceField(
+        label='Тема вашего обращения',
+        widget=forms.Select(),
+        choices=SUBJECT_CHOICES
+    )
