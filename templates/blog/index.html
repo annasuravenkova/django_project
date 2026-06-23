@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Главная страница - {{ block.super }}
+{{ title }} - {{ block.super }}
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,7 @@
 
             <h2 class="mb-4 fw-bold">Последние публикации</h2>
 
-            {% for post in posts %}
+            {% for post in latest_posts %}
                 <article class="card mb-4 border-0 shadow-sm">
                     <div class="card-body p-4">
                         <!-- Заголовок категории (если она есть) -->
@@ -76,24 +76,21 @@
                 </div>
             </div>
 
-            <!-- Новая карточка: Поиск по блогу -->
+            <!-- Карточка "Категории" -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">Поиск по блогу</h4>
-                    <form method="get" action="" class="d-flex" role="search">
-                        <input type="text"
-                               name="query"
-                               value="{{ request.GET.query|default:'' }}"
-                               class="form-control"
-                               placeholder="Введите слово для поиска...">
-                        <button class="btn btn-outline-dark ms-2" type="submit">Найти</button>
-                    </form>
-                    <!-- Опционально: вывод ошибок валидации, если они есть в переданной форме -->
-                    {% if search_form.query.errors %}
-                        <div class="text-danger small mt-2">
-                            {{ search_form.query.errors }}
-                        </div>
-                    {% endif %}
+                    <h4 class="fw-bold mb-3">Категории</h4>
+                    <ul class="list-unstyled mb-0">
+                        {% for category in categories %}
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none text-secondary">
+                                    {{ category.title }}
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Категории отсутствуют</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
