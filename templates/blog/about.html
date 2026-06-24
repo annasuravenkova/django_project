@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    О проекте - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+                <h1 class="display-5 fw-bold text-dark">О проекте</h1>
+                <p class="fs-5 text-muted">
+                    Это учебный блог, разработанный в рамках практического курса по Django.
+                </p>
+                <hr>
+                <p class="text-secondary">
+                    Проект представляет собой полноценное веб-приложение для ведения блога, где публикуются статьи на различные темы —
+                    от окружающего мира до авиации. Здесь вы найдёте интересные материалы.
+                </p>
+                <p class="text-secondary">
+                    Блог написан на <strong>Django 5</strong> с использованием менеджера зависимостей <strong>UV</strong>,
+                    фронтенд построен на <strong>Bootstrap 5</strong>. Все статьи проходят модерацию и публикуются после проверки.
+                </p>
+                <p class="text-secondary">
+                    Проект создан с целью освоения современных инструментов веб-разработки и демонстрации возможностей Django.
+                </p>
+                <a href="{% url 'blog:index_page' %}" class="btn btn-outline-dark mt-3">← Вернуться на главную</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

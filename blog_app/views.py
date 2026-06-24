@@ -1,13 +1,10 @@
-from django.shortcuts import get_object_or_404, redirect
-
-from blog_app.mixins import TitleMixin
 from blog_app.models import Category, Post
 from django.shortcuts import render
 from blog_app.forms import PostForm, CategoryForm
 from pytils.translit import slugify
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from blog_app.mixins import StaffRequiredMixin
+from blog_app.mixins import StaffRequiredMixin, TitleMixin
 
 
 # def index(request):
@@ -31,13 +28,6 @@ class IndexView(TitleMixin, TemplateView):
         context['latest_posts'] = Post.objects.filter(published=True).select_related('category', 'author')[:5]
         context['categories'] = Category.objects.all()
         return context
-
-
-
-
-
-
-
 
 # def posts_list(request):
 #     posts = Post.objects.filter(published=True)
@@ -70,6 +60,32 @@ class PostDetailView(DetailView):
     template_name = 'blog/post_detail.html'
     slug_url_kwarg = 'post_slug'
 
+    def get_object(self, queryset=None):
+        post = super().get_object(queryset=queryset)
+        post.increase_views_count()
+        return post
+
+# def categories_list(request):
+#     categories = Category.objects.all()
+#     context = {
+#         'categories': categories
+#     }
+#     return render(request, 'blog/categories_list.html', context)
+
+class CategoriesListView(ListView):
+    model = Category
+    template_name = 'blog/categories_list.html'
+    context_object_name = 'categories'
+
+#
+# def category_detail(request, category_id):
+#     category = get_object_or_404(Category, id=category_id)
+#     posts = Post.objects.filter(category=category, published=True)
+#     context = {
+#         'category': category,
+#         'posts': posts
+#     }
+#     return render(request, 'blog/category_detail.html', context)
     def get_queryset(self, *args, **kwargs):
         return Post.objects.select_related('category', 'author')
 
@@ -80,15 +96,17 @@ def categories_list(request):
     }
     return render(request, 'blog/categories_list.html', context)
 
+class CategoryDetailView(DetailView):
+    model = Category
+    template_name = 'blog/category_detail.html'
+    context_object_name = 'category'
+    pk_url_kwarg = 'category_id'
 
-def category_detail(request, category_id):
-    category = get_object_or_404(Category, id=category_id)
-    posts = Post.objects.filter(category=category, published=True)
-    context = {
-        'category': category,
-        'posts': posts
-    }
-    return render(request, 'blog/category_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posts'] = Post.objects.filter(category=self.object, published=True)
+        return context
+
 
 
 # def post_create(request):
@@ -103,17 +121,29 @@ def category_detail(request, category_id):
 #         form = PostForm()
 #     return render(request, 'blog/post_create.html', context={'form':form})
 #
-def category_create(request):
-    if request.method == 'POST':
-        form = CategoryForm(data=request.POST)
-        if form.is_valid():
-            category = form.save(commit=False)
-            category.slug = slugify(category.title)
-            category.save()
-            return redirect('blog:index_page')
-    else:
-        form = CategoryForm()
-    return render(request, 'blog/category_create.html', context = {'form':form})
+# def category_create(request):
+#     if request.method == 'POST':
+#         form = CategoryForm(data=request.POST)
+#         if form.is_valid():
+#             category = form.save(commit=False)
+#             category.slug = slugify(category.title)
+#             category.save()
+#             return redirect('blog:index_page')
+#     else:
+#         form = CategoryForm()
+#     return render(request, 'blog/category_create.html', context = {'form':form})
+
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'blog/category_create.html'
+    success_url = reverse_lazy('blog:index_page')
+    def form_valid(self, form):
+        category = form.save(commit=False)
+        category.slug = slugify(category.title)
+        category.save()
+        return super().form_valid(form)
+
 
 class PostFormBase:
     model = Post
