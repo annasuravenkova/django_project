@@ -3,6 +3,6 @@ from feedback_app import views
 
 app_name = 'feedback'
 urlpatterns = [
-    path("", views.feedback_view, name="feedback_page"),
-    path('success/', views.feedback_success, name='feedback_success')
+    path("", views.FeedbackView.as_view(), name="feedback_page"),
+    path('success/', views.FeedbackSuccessView.as_view(), name='feedback_success')
 ]

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ category.title }} - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!-- Левая колонка с постами категории -->
+        <div class="col-lg-8">
+            <!-- Заголовок категории -->
+            <div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+                <div class="container-fluid py-2">
+                    <h1 class="display-5 fw-bold text-dark">{{ category.title }}</h1>
+                    {% if category.description %}
+                        <p class="col-md-12 fs-5 text-muted">{{ category.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <h2 class="mb-4 fw-bold">Статьи в этой категории</h2>
+
+            <!-- Список постов -->
+            {% for post in posts %}
+                <article class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="card-title h2 mt-2 fw-bold">
+                            <a href="{% url 'blog:posts_detail' post.slug %}"
+                               class="text-decoration-none text-dark hover-primary">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+
+                        <div class="text-muted small mb-3">
+                            Опубликовано: {{ post.created_at|date:"d M Y в H:i" }} | Автор: {{ post.author }}
+                        </div>
+
+                        <p class="card-text text-secondary fs-5">
+                            {{ post.content|truncatewords:25 }}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'blog:posts_detail' post.slug %}" class="btn btn-outline-dark">
+                                Читать далее &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="alert alert-info border-0 shadow-sm" role="alert">
+                    В этой категории пока нет статей.
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Правая колонка: Сайдбар -->
+        <div class="col-lg-4">
+            <!-- Карточка "О категории" -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">О категории</h4>
+                    <p class="text-secondary mb-0">
+                        {% if category.description %}
+                            {{ category.description }}
+                        {% else %}
+                            Описание категории отсутствует.
+                        {% endif %}
+                    </p>
+                    <hr>
+                    <p class="text-muted small mb-0">
+                        Количество статей: {{ posts|length }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Карточка "Навигация" -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">Навигация</h4>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="{% url 'blog:index_page' %}" class="text-decoration-none">← На главную</a></li>
+                        <li><a href="{% url 'blog:posts_list' %}" class="text-decoration-none">Все статьи</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

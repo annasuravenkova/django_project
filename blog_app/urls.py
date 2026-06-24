@@ -1,5 +1,6 @@
 from django.urls import path
 from blog_app import views
+from django.views.generic import TemplateView
 
 app_name = 'blog'
 
@@ -10,8 +11,8 @@ urlpatterns = [
     path('posts/<slug:post_slug>/', views.PostDetailView.as_view(), name="posts_detail"),
     path('posts/<slug:post_slug>/edit/', views.PostUpdateView.as_view(), name="post_edit"),
     path('posts/<slug:post_slug>/delete/', views.PostDeleteView.as_view(), name="post_delete"),
-    path("categories/", views.categories_list, name="categories_list"),
-    path('category/<int:category_id>/', views.category_detail, name="category_detail"),
-    path('categories/create/', views.category_create, name="category_create"),
-
+    path("categories/", views.CategoriesListView.as_view(), name="categories_list"),
+    path('category/<int:category_id>/', views.CategoryDetailView.as_view(), name="category_detail"),
+    path('categories/create/', views.CategoryCreateView.as_view(), name="category_create"),
+    path('about/', TemplateView.as_view(template_name='blog/about.html'), name='about'),
 ]
