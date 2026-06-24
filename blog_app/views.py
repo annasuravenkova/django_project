@@ -29,13 +29,6 @@ class IndexView(TitleMixin, TemplateView):
         context['categories'] = Category.objects.all()
         return context
 
-
-
-
-
-
-
-
 # def posts_list(request):
 #     posts = Post.objects.filter(published=True)
 #
