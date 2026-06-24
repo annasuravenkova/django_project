@@ -1,23 +1,40 @@
 from blog_app.models import Category, Post
 from django.shortcuts import render
-from blog_app.forms import PostForm, SearchForm, CategoryForm
+from blog_app.forms import PostForm, CategoryForm
 from pytils.translit import slugify
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
+from blog_app.mixins import StaffRequiredMixin, TitleMixin
 
 
-def index(request):
-    search_form = SearchForm(request.GET)
-    posts = Post.objects.filter(published=True)
-    if search_form.is_valid():
-        query = search_form.cleaned_data.get('query')
-        posts = posts.filter(title__icontains=query)
-        posts = posts[:5]
-    context = {
-        'posts': posts,
-        'search_form': search_form
-    }
-    return render(request, 'blog/index.html', context)
+# def index(request):
+#     search_form = SearchForm(request.GET)
+#     posts = Post.objects.filter(published=True)
+#     if search_form.is_valid():
+#         query = search_form.cleaned_data.get('query')
+#         posts = posts.filter(title__icontains=query)
+#         posts = posts[:5]
+#     context = {
+#         'posts': posts,
+#         'search_form': search_form
+#     }
+#     return render(request, 'blog/index.html', context)
+
+class IndexView(TitleMixin, TemplateView):
+    template_name = 'blog/index.html'
+    title = 'Главная'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['latest_posts'] = Post.objects.filter(published=True).select_related('category', 'author')[:5]
+        context['categories'] = Category.objects.all()
+        return context
+
+
+
+
+
+
+
 
 # def posts_list(request):
 #     posts = Post.objects.filter(published=True)
@@ -29,13 +46,15 @@ def index(request):
 #
 #     return render(request, 'blog/posts_list.html', context)
 
-class PostListView(ListView):
+class PostListView(TitleMixin, ListView):
     model = Post
     template_name = 'blog/posts_list.html'
     context_object_name = 'posts'
     paginate_by = 5
+    # title = 'Список статей'
     def get_queryset(self):
-        return Post.objects.filter(published=True)
+        return Post.objects.filter(published=True).select_related('category', 'author')
+
 
 # def posts_detail(request, post_slug):
 #     post = get_object_or_404(Post, slug=post_slug)
@@ -74,6 +93,15 @@ class CategoriesListView(ListView):
 #         'posts': posts
 #     }
 #     return render(request, 'blog/category_detail.html', context)
+    def get_queryset(self, *args, **kwargs):
+        return Post.objects.select_related('category', 'author')
+
+def categories_list(request):
+    categories = Category.objects.all()
+    context = {
+        'categories': categories
+    }
+    return render(request, 'blog/categories_list.html', context)
 
 class CategoryDetailView(DetailView):
     model = Category
@@ -129,11 +157,12 @@ class PostFormBase:
     form_class = PostForm
     success_url = reverse_lazy('blog:index_page')
 
-class PostCreateView(PostFormBase, CreateView):
+class PostCreateView(StaffRequiredMixin, PostFormBase, CreateView):
     template_name = 'blog/post_create.html'
 
     def form_valid(self, form):
         form.instance.slug = slugify(form.instance.title)
+        form.instance.author = self.request.user
         return super().form_valid(form)
 
 # def post_edit(request, post_slug):
