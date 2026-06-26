@@ -5,4 +5,4 @@ from users_app.models import Profile
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'bio', 'social_link')
     list_filter = ('user',)
-    search_fields = ('user', 'social_link')
+    search_fields = ('user',)
