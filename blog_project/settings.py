@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog_app',
     'feedback_app',
+    'users_app',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,9 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_REDIRECT_URL = 'blog:index_page'
+LOGOUT_REDIRECT_URL = 'blog:index_page'
+LOGIN_URL = 'users:login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Профиль {{ profile.user.username }} - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-5">
+                <div class="row align-items-center">
+                    <!-- Аватар -->
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="Аватар {{ profile.user.username }}"
+                                 class="img-fluid rounded-circle shadow-sm" style="max-width: 180px; width: 100%;">
+                        {% else %}
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                 style="width: 150px; height: 150px; font-size: 4rem; color: white;">
+                                {{ profile.user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Информация -->
+                    <div class="col-md-8">
+                        <h1 class="display-6 fw-bold">{{ profile.user.get_full_name|default:profile.user.username }}</h1>
+                        <p class="text-muted mb-2">@{{ profile.user.username }}</p>
+                        <p class="text-secondary mb-3">
+                            <i class="bi bi-envelope"></i> {{ profile.user.email }}
+                        </p>
+
+                        {% if profile.bio %}
+                            <div class="mb-3">
+                                <h5 class="fw-semibold">О себе</h5>
+                                <p class="text-secondary">{{ profile.bio|linebreaks }}</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-calendar3"></i> Дата регистрации: {{ profile.user.date_joined|date:"d M Y" }}
+                            </span>
+                            {% if profile.location %}
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-geo-alt"></i> {{ profile.location }}
+                                </span>
+                            {% endif %}
+                            {% if profile.birth_date %}
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-cake2"></i> День рождения: {{ profile.birth_date|date:"d M Y" }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Кнопка редактирования -->
+                        <div class="mt-4">
+                            <a href="{% url 'users:profile_edit' %}" class="btn btn-dark">
+                                <i class="bi bi-pencil"></i> Редактировать профиль
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительная информация (например, статистика постов) -->
+        <div class="mt-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Активность</h5>
+                    <div class="row text-center">
+                        <div class="col">
+                            <span class="h5 fw-bold">0</span>
+                            <p class="text-muted mb-0">Статей</p>
+                        </div>
+                        <div class="col">
+                            <span class="h5 fw-bold">0</span>
+                            <p class="text-muted mb-0">Комментариев</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
