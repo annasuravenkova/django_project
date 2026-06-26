@@ -5,6 +5,7 @@ from pytils.translit import slugify
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from blog_app.mixins import StaffRequiredMixin, TitleMixin
+from users_app.mixins import AuthorRequiredMixin
 
 
 # def index(request):
@@ -166,7 +167,7 @@ class PostCreateView(StaffRequiredMixin, PostFormBase, CreateView):
 #         return redirect('blog:posts_detail', post_slug=post.slug)
 #     return render(request, 'blog/post_edit.html', context={'form':form, 'post':post})
 
-class PostUpdateView(PostFormBase, UpdateView):
+class PostUpdateView(AuthorRequiredMixin, PostFormBase, UpdateView):
     template_name = 'blog/post_edit.html'
     slug_url_kwarg = 'post_slug'
 
