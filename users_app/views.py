@@ -23,7 +23,7 @@ class ProfileDetailView(DetailView):
 
 class ProfileUpdateView(UpdateView):
     template_name = 'users/profile_edit.html'
-    fields = ['bio', 'social_link']
+    fields = ['bio', 'social_link', 'avatar']
     success_url = reverse_lazy('blog:index_page')
 
     def get_object(self, queryset=None):
