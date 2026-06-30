@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
 
 class Category(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название категории")
@@ -23,6 +24,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
     views_count = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="posts", verbose_name="Категория", null=True)
+    image = models.ImageField(upload_to='posts/', blank=True, null=True, verbose_name='Обложка')
 
     class Meta:
         verbose_name = 'Статья'
@@ -35,3 +37,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            image = Image.open(self.image.path)
+            if image.width > 1200 or image.height > 1200:
+                output_size = (1200, 1200)
+                image.thumbnail(output_size)
+                image.save(self.image.path)

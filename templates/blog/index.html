@@ -23,10 +23,14 @@
 
             {% for post in latest_posts %}
                 <article class="card mb-4 border-0 shadow-sm">
+                    <!-- Обложка (если есть) — вверху карточки -->
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 300px; object-fit: cover;">
+                    {% endif %}
                     <div class="card-body p-4">
                         <!-- Заголовок категории (если она есть) -->
                         {% if post.category %}
-                            <a href="{% url 'blog:posts_detail' post.slug %}"
+                            <a href="{% url 'blog:category_detail' post.category.id %}"
                                class="text-decoration-none text-primary fw-bold text-uppercase fs-6">
                                 {{ post.category.title }}
                             </a>
@@ -83,7 +87,7 @@
                     <ul class="list-unstyled mb-0">
                         {% for category in categories %}
                             <li class="mb-2">
-                                <a href="#" class="text-decoration-none text-secondary">
+                                <a href="{% url 'blog:category_detail' category.id %}" class="text-decoration-none text-secondary">
                                     {{ category.title }}
                                 </a>
                             </li>
