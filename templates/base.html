@@ -56,11 +56,25 @@
                         <a class="nav-link" href="{% url 'blog:about' %}">О проекте</a>
                     </li>
 
-                    <!-- Блок пользователя -->
+                    <!-- Блок пользователя с аватаром -->
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <!-- Аватар пользователя -->
+                                {% with user_profile=user.profile %}
+                                    {% if user_profile and user_profile.avatar %}
+                                        <img src="{{ user_profile.avatar.url }}"
+                                             width="30" height="30"
+                                             class="rounded-circle me-1"
+                                             alt="Аватар пользователя">
+                                    {% else %}
+                                        <span class="avatar-placeholder rounded-circle bg-secondary text-white d-inline-block text-center"
+                                              style="width:30px;height:30px;line-height:30px;font-size:14px;">
+                                            {{ user.username|first|upper }}
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
                                 {{ user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -92,9 +106,23 @@
 </main>
 
 <footer class="bg-dark text-light py-4 mt-auto">
-    <div class="container text-center">
-        <p class="mb-1">&copy; 2026 Учебный Django-проект.</p>
-        <small class="text-muted">Сделано с любовью на курсе по Django</small>
+    <div class="container">
+        <!-- Статистика (только статьи и пользователи) -->
+        <div class="row text-center text-md-start mb-3 border-bottom border-secondary pb-3">
+            <div class="col-md-6 col-6 mb-2 mb-md-0">
+                <span class="text-white-50">📄 Статей:</span>
+                <span class="fw-bold text-white">{{ total_posts|default:"0" }}</span>
+            </div>
+            <div class="col-md-6 col-6 mb-2 mb-md-0">
+                <span class="text-white-50">👥 Пользователей:</span>
+                <span class="fw-bold text-white">{{ total_users|default:"0" }}</span>
+            </div>
+        </div>
+        <!-- Копирайт -->
+        <div class="text-center">
+            <p class="mb-1 text-white-50">&copy; 2026 Учебный Django-проект.</p>
+            <small class="text-white-50">Сделано с любовью на курсе по Django</small>
+        </div>
     </div>
 </footer>
 <script src="{% static 'JS/bootstrap.bundle.min.js' %}"></script>
